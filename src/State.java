@@ -1,62 +1,43 @@
 
-public class state 
+public class State 
 {
-	int miss;
-	int cann;
-	int boat;
-	state prev;
-	int depth;
-	
-	public state(int miss, int cann, int boat, int d)
-    {  
-        this(miss, cann, boat, null, d);
-    }  
-      
-    public state(int miss, int cann, int boat, state prv, int d)
-    {
-        this.miss = miss;  
-        this.cann = cann;  
-        this.boat = boat;  
-        this.prev = prv;  
-        this.depth = d;
-    }
-    boolean isValid() 
+	int can_count;
+	int mis_count;
+	int boat_pos;
+	State next;
+	State prev;
+	State(int can_count, int mis_count, int boat_pos, State next, State prev) 
 	{
-		if(this.cann > 3 || this.cann < 0 || this.miss > 3 || this.miss < 0) // Src
+		this.can_count = can_count;
+		this.mis_count = mis_count;
+		this.boat_pos = boat_pos;
+		this.next = next;
+		this.prev = prev;
+	}
+	boolean isReached()
+	{
+		if(this.can_count == 0 && this.mis_count == 0 && this.boat_pos == 1)
+			return true;
+		return false;
+	}
+	boolean isValid() 
+	{
+		if(this.can_count > 3 || this.can_count < 0 || this.mis_count > 3 || this.mis_count < 0)
 			return false;
-		if((3 - this.cann) > 3 || (3 - this.cann) < 0 || (3 - this.miss) > 3 || (3 - this.miss) < 0) //Dest
+		if(this.mis_count < this.can_count)
 			return false;
-		if(this.miss > 0 && this.miss < this.cann)
+		if((this.mis_count == 3 && this.can_count == 0) || (this.mis_count == 0 && this.can_count == 3))
 			return false;
-		if((3 - this.miss) > 0 && (3 - this.miss) < (3 - this.cann))
-			return false;
+		//displayState();
 		return true;
 	}
-	
-    public void display() // this function is used to display the path
-    {  
-	    if(this.prev != null) 
-	    {  
-	        this.prev.display();
-	        if(this.boat == 0)
-		    {
-		    	System.out.println("Boat moves from src -> dest");
-		    }
-		    else if(this.boat == 1)
-		    {
-		    	System.out.println("Boat moves from dest -> src");
-		    }
-	    }
-	    
-	    System.out.println("Src:  M :"+ this.miss + "  C :" + this.cann);
-	    System.out.println("Dest: M :"+ (3 - this.miss) + "  C :" + (3 - this.cann));
+	void displayState()
+	{
+		System.out.println("Can: " + this.can_count);
+		System.out.println("Mis: " + this.mis_count);
+		if(this.boat_pos == 0)
+			System.out.println("Boat: Src");
+		else
+			System.out.println("Boat: Dest");
 	}
-    
-    public boolean checkFinal()
-    {  
-        if(this.miss == 0 && this.cann == 0 && this.boat == 0)
-        	return true;
-        return false;
-    }
-    
 }
